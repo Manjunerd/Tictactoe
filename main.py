@@ -331,7 +331,7 @@ async def login(request: Request):
     redirect_uri = str(request.url_for('auth_callback'))
     if "127.0.0.1" in redirect_uri:
         redirect_uri = redirect_uri.replace("127.0.0.1", "localhost")
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+    return await oauth.google.authorize_redirect(request, redirect_uri,prompt="select_account")
 
 
 @app.get("/api/auth/callback", name="auth_callback")
