@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tictac toe</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #080807;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(252, 252, 226, 0.1);
+            border-top: 4px solid #d8c3a5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .branding-text {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #d8c3a5;
+            opacity: 0.8;
+        }
+    </style>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check session state
+            const loggedIn = localStorage.getItem('ttt_user_logged');
+            
+            setTimeout(() => {
+                if (loggedIn === 'true') {
+                    window.location.href = 'gameplay.html';
+                } else {
+                    window.location.href = 'login.html';
+                }
+            }, 600); // Small delay for visual loading splash
+        });
+    </script>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <div class="branding-text">Tictac toe</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tictac toe - Login</title>
+
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #080807;
+            --bg-light: #fcfce2;
+            --accent-gold: #d8c3a5;
+            --accent-gold-hover: #e8d8c3;
+            --text-dark: #121212;
+            --text-light: #f5f5f0;
+            --card-bg: rgba(15, 15, 12, 0.75);
+            --card-border: rgba(252, 252, 226, 0.15);
+            --font-display: 'Syne', sans-serif;
+            --font-sans: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Dynamic Animated Gradient Background --- */
+        .ambient-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            background: radial-gradient(circle at 10% 20%, #151512 0%, #030302 100%);
+        }
+
+        /* Ambient light spheres that drift and pulse slowly */
+        .sphere {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.45;
+            mix-blend-mode: screen;
+            animation: float-around 20s infinite ease-in-out alternate;
+        }
+
+        .sphere-cream-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--bg-light) 0%, rgba(252, 252, 226, 0.2) 60%, rgba(0, 0, 0, 0) 100%);
+            top: -150px;
+            right: -100px;
+            animation-duration: 25s;
+        }
+
+        .sphere-cream-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(252, 252, 226, 0.85) 0%, rgba(216, 195, 165, 0.15) 50%, rgba(0, 0, 0, 0) 100%);
+            bottom: -200px;
+            left: -150px;
+            animation-duration: 32s;
+            animation-delay: -5s;
+        }
+
+        .sphere-dark {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, #000 0%, #1a1a12 50%, rgba(0, 0, 0, 0) 100%);
+            top: 35%;
+            left: 25%;
+            opacity: 0.9;
+            animation-duration: 40s;
+        }
+
+        @keyframes float-around {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(8%, 12%) scale(1.1) rotate(90deg);
+            }
+
+            100% {
+                transform: translate(-10%, -8%) scale(0.9) rotate(180deg);
+            }
+        }
+
+        /* Subtle grid overlay to give structure */
+        .overlay-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(252, 252, 226, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(252, 252, 226, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* --- Glassmorphic Login Card --- */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 440px;
+            padding: 55px 40px;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-up-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fade-up-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo Branding */
+        .logo-wrap {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .logo-title {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            text-transform: lowercase;
+        }
+
+        .logo-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 20%;
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-top: 12px;
+            opacity: 0.8;
+        }
+
+        .tagline {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 45px;
+            line-height: 1.6;
+        }
+
+        /* --- Google Button styling (premium dark-gold variant) --- */
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            padding: 16px 24px;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 14px;
+            font-family: var(--font-sans);
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .google-btn:hover {
+            background-color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(252, 252, 226, 0.25),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.2px;
+        }
+
+        .google-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(252, 252, 226, 0.15);
+        }
+
+        .google-btn svg {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .google-btn:hover svg {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(18, 18, 18, 0.1);
+            border-top: 3px solid var(--text-dark);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            background: rgba(252, 252, 226, 0.8);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Decorative Grid Elements */
+        .deco-dots {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            color: var(--accent-gold);
+            opacity: 0.15;
+            font-size: 1.5rem;
+            pointer-events: none;
+            letter-spacing: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Dynamic moving background spheres -->
+    <div class="ambient-bg">
+        <div class="sphere sphere-cream-1"></div>
+        <div class="sphere sphere-dark"></div>
+        <div class="sphere sphere-cream-2"></div>
+    </div>
+
+    <!-- Grid pattern overlay -->
+    <div class="overlay-grid"></div>
+
+    <!-- Main Glassmorphic Login Wireframe Card -->
+    <div class="login-container" id="loginCard">
+        <div class="logo-wrap">
+            <h1 class="logo-title" id="logoText">Tictac toe</h1>
+            <p class="logo-subtitle">Wireframe Edition</p>
+        </div>
+
+        <p class="tagline">Experience classic Tic Tac Toe refined with high-end dark luxury styling and dynamic layout
+            mechanics.</p>
+
+        <button class="google-btn" id="googleLoginBtn">
+            <svg id="googleSvg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.87-2.6-2.86-4.53-6.16-4.53z"
+                    fill="#FBBC05" />
+                <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    fill="#EA4335" />
+            </svg>
+            <div class="spinner" id="btnSpinner"></div>
+            <span id="btnText">Sign in with Google</span>
+        </button>
+
+        <div class="deco-dots">••••<br>••••</div>
+    </div>
+
+    <script>
+        // --- Web Audio API Synth Engine ---
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new AudioCtx();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function playSound(type) {
+            try {
+                initAudio();
+                const dest = audioContext.destination;
+
+                if (type === 'hover') {
+                    // Smooth warm interface tick
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.05);
+
+                    gain.gain.setValueAtTime(0.015, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.05);
+
+                    osc.connect(gain);
+                    gain.connect(dest);
+
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.05);
+                }
+                else if (type === 'success') {
+                    // Upward bright luxury chime
+                    const t = audioContext.currentTime;
+                    const chord = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+
+                    chord.forEach((freq, idx) => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, t + (idx * 0.07));
+
+                        gain.gain.setValueAtTime(0, t);
+                        gain.gain.linearRampToValueAtTime(0.04, t + (idx * 0.07) + 0.02);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, t + (idx * 0.07) + 0.4);
+
+                        osc.connect(gain);
+                        gain.connect(dest);
+
+                        osc.start(t + (idx * 0.07));
+                        osc.stop(t + (idx * 0.07) + 0.4);
+                    });
+                }
+            } catch (e) {
+                console.warn("Audio Context blocked or not supported: ", e);
+            }
+        }
+
+        // --- Interaction Listeners ---
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const googleSvg = document.getElementById('googleSvg');
+        const loginCard = document.getElementById('loginCard');
+
+        // Play subtle audio on hover
+        googleLoginBtn.addEventListener('mouseenter', () => playSound('hover'));
+
+        // Action on Google Sign-In
+        googleLoginBtn.addEventListener('click', function (e) {
+            initAudio();
+            playSound('success');
+
+            // Button Ripple effect
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+
+            // Loading Transition State
+            googleLoginBtn.style.pointerEvents = 'none';
+            googleSvg.style.display = 'none';
+            btnSpinner.style.display = 'block';
+            btnText.textContent = 'Connecting...';
+            googleLoginBtn.style.opacity = '0.9';
+
+            // Wait 1.2 seconds, fade out the card, and redirect to Google login
+            setTimeout(() => {
+                loginCard.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                loginCard.style.opacity = '0';
+                loginCard.style.transform = 'translateY(-30px)';
+
+                setTimeout(() => {
+                    window.location.href = '/api/auth/login';
+                }, 400);
+            }, 1200);
+        });
+
+        // Trigger floaty animations based on mouse movement for high-end luxury feel
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.015;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.015;
+
+            const spheres = document.querySelectorAll('.sphere');
+            spheres[0].style.transform = `translate(${moveX}px, ${moveY}px)`;
+            spheres[1].style.transform = `translate(${-moveX * 1.5}px, ${-moveY * 1.5}px)`;
+            spheres[2].style.transform = `translate(${moveX * 0.8}px, ${-moveY * 0.8}px)`;
+        });
+    </script>
+</body>
+
+</html>
