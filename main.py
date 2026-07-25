@@ -54,7 +54,7 @@ app.add_middleware(
 )
 
 # 2. Configure Authlib with your Google Credentials  # Loads variables from your .env file
-oauth = OAuth(config)
+oauth = OAuth()
 
 oauth.register(
     name='google',
